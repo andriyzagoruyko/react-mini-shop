@@ -1,41 +1,70 @@
-import {observable, computed, action} from 'mobx';
-import productsModel from '~s/products.js';
+import { observable, computed, action } from 'mobx';
 
-class Cart{
-    @observable items = []
+export default class {
+    @observable products = []
 
-    @computed get total(){
-        return this.items.reduce((t, item) =>{
-            return t + productsModel.getProduct(item.id).price * item.count
-        }, 0);
+    constructor(rootStore) {
+        this.rootStore = rootStore;
+        this.storage = this.rootStore.storage;
+        this.token = this.storage.getItem('cartToken');
     }
 
-    @computed get count(){
-        return this.items.reduce((tc, i) => tc + i.count, 0);
-    }
-
-    @computed get contains() {
-        return (id) => this.items.some((item) => item.id == id);
-    }
-
-    @action add(productId){ 
-        this.items.push({
-            id: productId,
-            count: 1
+    @computed get productsDetailed() {
+        return this.products.map((pr) => {
+            let product = this.rootStore.products.getById(pr.id);
+            return { ...product, cnt: pr.cnt };
         });
     }
 
-    @action change(i, cnt){
-        this.items[i].count = cnt;
+    @computed get inCart() {
+        return (id) => this.products.some((product) => product.id === id);
     }
 
-    @action remove(productId){
-        let index =  this.items.findIndex(item => item.id === productId);
-        
-        if (index != -1) {
-            this.items.splice(index, 1);
+    @computed get cartCnt() {
+        return this.products.length;
+    }
+
+    @computed get total() {
+        return this.productsDetailed.reduce((t, pr) => {
+            return t + pr.price * pr.cnt;
+        }, 0).toFixed(2);
+    }
+
+    @action load() {
+        let storageCart = this.storage.getItem('cart');
+        this.products = storageCart != null ? JSON.parse(storageCart) : [];
+    }
+
+    @action save() {
+        this.storage.setItem('cart', JSON.stringify(this.products));
+    }
+
+    @action add(id) {
+        if (!this.inCart(id)) {
+            this.products.push({ id, cnt: 1 });
+            this.save();
         }
     }
-}
 
-export default new Cart();
+    @action change(id, cnt) {
+        let index = this.products.findIndex((pr) => pr.id === id);
+
+        if (index !== -1) {
+            this.products[index].cnt = cnt;
+            this.save();
+        }
+    }
+
+    @action remove(id) {
+        if (this.inCart(id)) {
+            let index = this.products.findIndex((pr) => pr.id === id);
+            this.products.splice(index, 1);
+            this.save();
+        }
+    }
+
+    @action clean() {
+        this.products = [];
+        this.save();
+    }
+}

@@ -1,3 +1,7 @@
-.input{
-    width: 500px;
+.active{
+    color: red;
+}
+
+.myItem{
+    background: #eee;
 }

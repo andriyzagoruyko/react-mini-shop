@@ -1,14 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Form, Button, Modal} from 'react-bootstrap';
-import {observer} from 'mobx-react';
-import orderModel from '~s/order';
-import cartModel from '~s/cart';
+import withStore from '~/hocs/withStore';
 
 import { routesMap } from '~/routes';
 import { Link } from 'react-router-dom';
 
-@observer class Order extends React.Component{
+class Order extends React.Component{
     state = {
         showModal: false
     }
@@ -22,12 +19,13 @@ import { Link } from 'react-router-dom';
     }
 
     confirm = () => {
+        this.props.stores.order.send()
         this.hide();
         this.props.history.push(routesMap.result);
-        console.log(this.props.history);
     }
 
     render(){
+        let orderModel = this.props.stores.order;
         let formFields = [];
 
         for(let name in orderModel.formData){
@@ -53,7 +51,7 @@ import { Link } from 'react-router-dom';
         return (
             <div>
                 <h2>Order</h2>
-                <hr/>
+                <br/>
                 <Form>
                     {formFields}
                 </Form>
@@ -61,6 +59,7 @@ import { Link } from 'react-router-dom';
                     Back to cart
                 </Link>
                 &nbsp;
+                <hr/>
                 <Button variant="primary" 
                         onClick={this.show} 
                         disabled={!orderModel.formValid}>
@@ -71,11 +70,11 @@ import { Link } from 'react-router-dom';
                         <Modal.Title>Check information</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <strong>Total: {cartModel.total}</strong>
+                        <strong>Total: {this.props.stores.cart.total}</strong>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.hide}>
-                            Ooops
+                            Cancel
                         </Button>
                         <Button variant="primary" onClick={this.confirm}>
                             All right
@@ -87,4 +86,4 @@ import { Link } from 'react-router-dom';
     }
 }
 
-export default Order;
+export default withStore(Order);

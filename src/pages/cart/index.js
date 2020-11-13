@@ -1,34 +1,47 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import AppMinMax from '~c/inputs/minmax';
-
-import {observer} from 'mobx-react';
-import cartModel from '~s/cart.js';
-import productsModel from '~s/products.js';
-
-
 import { routesMap } from '~/routes';
 import { Link } from 'react-router-dom';
+import withStore from '~/hocs/withStore';
 
-@observer class Cart extends React.Component{
+class Cart extends React.Component{
     render(){
-        let productsRows = cartModel.items.map((item, i) => {
-            let product = productsModel.getProduct(item.id);
+        let cartModel = this.props.stores.cart;
 
+        if (cartModel.cartCnt < 1) {
+            return (
+                <>
+                    <h1>Cart is empty</h1>
+                    <hr/>
+                    <div className="alert alert-warning">
+                        <p>
+                            There are no produts in your cart.
+                            <br/>
+                            <Link to={routesMap.home}>Back to shop</Link>
+                        </p>
+                    </div>
+                </>
+            );
+        }
+
+        let productsRows = cartModel.productsDetailed.map((product) => {
             return (
                 <tr key={product.id}>
                     <td>{product.title}</td>
                     <td>{product.price}</td>
                     <td>
-                        <AppMinMax min={1} 
-                                   max={product.rest} 
-                                   cnt={cartModel.items[i].count} 
-                                   onChange={(cnt) => cartModel.change(i, cnt)}
+                        <AppMinMax 
+                            min={1} 
+                            max={10} 
+                            cnt={product.cnt} 
+                            onChange={(cnt) => cartModel.change(product.id, cnt)}
                         />
                     </td>
-                    <td>{product.price * item.count}</td>
+                    <td>{(product.price * product.cnt).toFixed(2)}</td>
                     <td>
                         <button onClick={() => cartModel.remove(product.id)}>
-                            X
+                            &times;
                         </button>
                     </td>
                 </tr>
@@ -37,7 +50,7 @@ import { Link } from 'react-router-dom';
 
         return (
             <div>
-                <h2>Cart</h2>
+                <h1>Cart</h1>
                 <br/>
                 <table className="table table-bordered">
                     <thead>
@@ -53,7 +66,6 @@ import { Link } from 'react-router-dom';
                         {productsRows}
                     </tbody> 
                 </table>
-                <br/>
                 <h3>Total: {cartModel.total}</h3>
                 <hr/>
                 <Link to={routesMap.order} className="btn btn-primary">
@@ -64,4 +76,4 @@ import { Link } from 'react-router-dom';
     }
 }
 
-export default Cart;
+export default withStore(Cart);

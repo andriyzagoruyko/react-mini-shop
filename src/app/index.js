@@ -1,12 +1,16 @@
 import React from 'react';
-import {observer} from 'mobx-react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import routes from '~/routes';
+import styles from './app.module.css';
+import withStore from '~/hocs/withStore';
+import {BrowserRouter as Router, Route, Switch, NavLink} from 'react-router-dom';
+import routes, { routesMap } from '~/routes';
+import Notifications from '~p/notifications';
+import Header from '~c/header';
 
-import Navbar from '~c/navbar';
 
-@observer class App extends React.Component{
+class App extends React.Component{
     render(){
+        let cart = this.props.stores.cart;
+
         let routesComponents = routes.map((route) => {
             return <Route path={route.url}
                           component={route.component}
@@ -16,17 +20,21 @@ import Navbar from '~c/navbar';
         });
 
         return (
-            <Router>
-                <Navbar/>
-                <br/>
-                <div className="container">
-                    <Switch>
-                        {routesComponents}
-                    </Switch>
+        <Router>
+            <Notifications/>
+            <Header cartCnt={cart.cartCnt} total={cart.total}/>
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col">
+                        <Switch>
+                            {routesComponents}
+                        </Switch>
+                    </div>
                 </div>
-            </Router>
+            </div>
+        </Router>
         )
     }
 }
 
-export default App;
+export default withStore(App);

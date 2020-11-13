@@ -1,6 +1,6 @@
-import {observable, computed, action} from 'mobx';
+import { observable, computed, action } from 'mobx';
 
-class Order{
+export default class {
     @observable formData = {
         name: {
             value: '',
@@ -25,29 +25,47 @@ class Order{
         }
     }
 
-    @computed get formValid(){
+    @observable lastOrderCache = {
+        name: '',
+        email: '',
+        phone: '',
+        total: ''
+    }
+
+    constructor(rootStore) {
+        this.rootStore = rootStore;
+    }
+
+    @computed get formValid() {
         return Object.values(this.formData).every(field => field.valid);
     }
 
-    @computed get data(){
+    @computed get data() {
         let data = {};
 
-        for(let name in this.formData){
+        for (let name in this.formData) {
             data[name] = this.formData[name].value;
         }
 
         return data;
     }
 
-    @action change(key, value){
+    @action change(key, value) {
         let field = this.formData[key];
         field.value = value;
         field.valid = field.validator(field.value);
     }
+
+    @action send() {
+        this.lastOrderCache.total = this.rootStore.cart.total;
+        this.rootStore.cart.clean();
+
+        for (let key in this.formData) {
+            this.lastOrderCache[key] = this.formData[key].value;
+            this.formData[key].value = '';
+        }
+    }
 }
-
-export default new Order();
-
 
 
 
@@ -60,7 +78,7 @@ export default new Order();
 
 
 // server api
-function getProducts(){
+function getProducts() {
     return [
         {
             id: 100,

@@ -1,0 +1,25 @@
+.product {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.productCard {
+    flex: 1 1 auto;
+}
+
+.productBody {
+    display: flex;
+    flex-direction: column;
+}
+
+.productText {
+    margin-top: auto
+}
+
+.productImage {
+    max-height: 250px;
+    object-fit: contain;
+    margin-top: auto
+}

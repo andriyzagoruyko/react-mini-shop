@@ -4,4 +4,15 @@ import App from './app';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-ReactDom.render(<App/>, document.querySelector('#app'));
+import {Provider} from 'mobx-react';
+import stores from '~s';
+
+stores.products.load().then(() => {
+    ReactDom.render(<Provider stores={stores}>
+        <App/>
+    </Provider>, document.querySelector('#app'));
+});
+
+stores.cart.load();
+
+

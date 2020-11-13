@@ -1,25 +1,23 @@
-import Home from '~p/Home';
 import Cart from '~p/Cart';
 import Order from '~p/Order';
 import Result from '~p/Result';
 import Page404 from '~p/error404';
-import Post from '~p/post';
-import Product from '~p/product';
-
+import ProductList from '~p/products/list';
+import ProductItem from '~p/products/item';
 
 let routes = [
     {
         name: 'home',
         url: '/',
-        component: Home,
+        component: ProductList,
         exact: true
-    },   
+    },
     {
         name: 'product',
         url: '/products/:id',
-        component: Product,
+        component: ProductItem,
         exact: true
-    }, 
+    },
     {
         name: 'cart',
         url: '/cart',
@@ -36,12 +34,6 @@ let routes = [
         name: 'result',
         url: '/done',
         component: Result,
-        exact: true
-    },
-    {
-        name: 'blogPost',
-        url: '/news/:some',
-        component: Post,
         exact: true
     },
     {
