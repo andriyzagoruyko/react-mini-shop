@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './app.module.css';
 import withStore from '~/hocs/withStore';
 import {BrowserRouter as Router, Route, Switch, NavLink} from 'react-router-dom';
 import routes, { routesMap } from '~/routes';

@@ -52,7 +52,7 @@ class Cart extends React.Component{
             <div>
                 <h1>Cart</h1>
                 <br/>
-                <table className="table table-bordered">
+                <table className="table table-bordered table-responsive">
                     <thead>
                         <tr>
                             <td>Title</td>

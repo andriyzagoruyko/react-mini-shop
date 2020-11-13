@@ -12,7 +12,7 @@ export default function (props) {
                     <Image src={props.image} thumbnail />
                 </Col>
             </Row>
-            <div>
+            <div class="mt-3">
                 <strong className='mr-3'>Price: {props.price}</strong>
                 <AddToCart
                     inCart={props.inCart}
@@ -20,8 +20,7 @@ export default function (props) {
                     onRemove={props.onRemove}
                 />
             </div>
-            <hr />
-            <div>
+            <div class="mt-3">
                 <p>{props.description}</p>
                 <props.linkComponent to={props.backUrl}>Back to list</props.linkComponent>
             </div>

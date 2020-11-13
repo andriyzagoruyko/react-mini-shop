@@ -43,7 +43,7 @@ export default class extends React.PureComponent{
 
     render(){
         return (
-            <div>
+            <div className={styles.minMax}>
                 <button onClick={this.decrease}
                         disabled={this.props.disabled || 
                                   this.props.cnt <= this.props.min}
